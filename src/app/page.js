@@ -1,14 +1,14 @@
-import {useState, useEffect} from 'react';
-import {getDistance} from '@/helpers/get-distance';
+'use client';
+
+import { useState, useEffect } from 'react';
+import useNetwork from '@/data/network';
+import { getDistance } from '@/helpers/get-distance';
 import Link from 'next/link';
 
-export default async function Home() {
+export default function Home() {
   const [filter, setFilter] = useState('');
   const [location, setLocation] = useState({});
-
-  const response = await fetch('https://api.citybik.es/v2/networks/velo-antwerpen')
-  const data = await response.json()
-  const network = data.network;
+  const { network, isLoading, isError } = useNetwork();
 
   // use effect gebruiken om bv iets op te roepen enkel bij opstart van de app
   useEffect(() => {
@@ -28,15 +28,23 @@ export default async function Home() {
       console.error('Geolocation is not supported by this browser.');
     }
   }, []);
- 
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error</div>
 
-  const stations = network.stations.filter(station => station.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
+
+  const stations = network.stations.filter(
+    (station) => station.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0
+  );
 
   // map stations to add disrance to current location
-  stations.map(station => {
-    station.distance = getDistance(location.latitude, location.longitude, station.latitude, station.longitude).distance/1000;
+  stations.map((station) => {
+    station.distance =
+      getDistance(
+        location.latitude,
+        location.longitude,
+        station.latitude,
+        station.longitude
+      ).distance / 1000;
   });
 
   // sort stations by distance
@@ -45,15 +53,17 @@ export default async function Home() {
   function handleFilterChange(e) {
     setFilter(e.target.value);
   }
-  console.log(stations)
 
   return (
     <div>
-      <input type="text" value={filter} onChange={handleFilterChange}/>
-      {stations.map(station => 
+      <input type="text" value={filter} onChange={handleFilterChange} />
+      {stations.map((station) => (
         <div key={station.id}>
-          <Link href={`/stations/${station.id}`}>{station.name}: {station.distance}km</Link>
-        </div>)}
+          <Link href={`/stations/${station.id}`}>
+            {station.name}: {station.distance}km
+          </Link>
+        </div>
+      ))}
     </div>
-  )
+  );
 }
