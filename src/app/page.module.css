@@ -1,7 +1,3 @@
-.isVisible {
-  opacity: 1;
-}
-
-.isNotVisible {
-  opacity: 0;
+.title {
+  color: red;
 }

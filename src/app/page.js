@@ -1,5 +1,6 @@
 'use client';
 
+import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import useNetwork from '@/data/network';
 import { getDistance } from '@/helpers/get-distance';
@@ -56,6 +57,7 @@ export default function Home() {
 
   return (
     <div>
+      <h1 className={styles.title}>Stations</h1>
       <input type="text" value={filter} onChange={handleFilterChange} />
       {stations.map((station) => (
         <div key={station.id}>

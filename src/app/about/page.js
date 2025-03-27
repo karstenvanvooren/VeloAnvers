@@ -1,5 +1,6 @@
 'use client';
 
+import styles from './page.module.css';
 import useNetwork from '@/data/network';
 
 export default function About() {
@@ -10,7 +11,7 @@ export default function About() {
 
   return (
     <div>
-      <h1>About {network.name}</h1>
+      <h1 className={styles.title}>About {network.name}</h1>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import styles from './page.module.css';
 import useNetwork from '@/data/network';
 import { useParams } from 'next/navigation';
 import StationImage from '@/components/StationImage';
@@ -17,7 +18,7 @@ export default function Station() {
 
   return (
     <div>
-      <h1>{station.name}</h1>
+      <h1 className={styles.title}>{station.name}</h1>
       <p>{station.free_bikes}</p>
       <StationImage station={station} />
     </div>
