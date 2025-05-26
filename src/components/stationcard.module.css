@@ -1,0 +1,122 @@
+.card {
+  position: relative;
+  height: 120px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.card:active {
+  transform: translateY(-2px);
+}
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+  padding: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.stationNumber {
+  font-size: 18px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 4px 8px;
+  align-self: flex-start;
+  backdrop-filter: blur(10px);
+}
+
+.bikeCount {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.status {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.distance {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 20px 12px 8px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.card:hover .cardOverlay {
+  transform: translateY(0);
+}
+
+.stationName {
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .card {
+    height: 100px;
+  }
+  
+  .cardContent {
+    padding: 10px;
+  }
+  
+  .stationNumber {
+    font-size: 16px;
+    padding: 3px 6px;
+  }
+  
+  .bikeCount {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  .status {
+    font-size: 10px;
+  }
+  
+  .distance {
+    font-size: 9px;
+    top: 6px;
+    right: 6px;
+  }
+  
+  .stationName {
+    font-size: 10px;
+  }
+}

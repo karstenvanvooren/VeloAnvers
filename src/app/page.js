@@ -4,14 +4,16 @@ import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import useNetwork from '@/data/network';
 import { getDistance } from '@/helpers/get-distance';
-import Link from 'next/link';
+import StationCard from '@/components/stationcard';
+import StationPopup from '@/components/stationPopup';
 
 export default function Home() {
   const [filter, setFilter] = useState('');
   const [location, setLocation] = useState({});
+  const [selectedStation, setSelectedStation] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   const { network, isLoading, isError } = useNetwork();
 
-  // use effect gebruiken om bv iets op te roepen enkel bij opstart van de app
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -30,42 +32,113 @@ export default function Home() {
     }
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error</div>;
+  if (isLoading) return (
+    <div className={styles.container}>
+      <div className={styles.loadingSpinner}></div>
+    </div>
+  );
+  
+  if (isError) return (
+    <div className={styles.container}>
+      <div className={styles.error}>Unable to load stations</div>
+    </div>
+  );
 
   const stations = network.stations.filter(
     (station) => station.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0
   );
 
-  // map stations to add disrance to current location
+  // Add distance to stations
   stations.map((station) => {
-    station.distance =
-      getDistance(
-        location.latitude,
-        location.longitude,
-        station.latitude,
-        station.longitude
-      ).distance / 1000;
+    if (location.latitude && location.longitude) {
+      station.distance =
+        getDistance(
+          location.latitude,
+          location.longitude,
+          station.latitude,
+          station.longitude
+        ).distance / 1000;
+    } else {
+      station.distance = 0;
+    }
   });
 
-  // sort stations by distance
+  // Sort stations by distance
   stations.sort((a, b) => a.distance - b.distance);
 
   function handleFilterChange(e) {
     setFilter(e.target.value);
   }
 
+  function handleStationClick(station) {
+    setSelectedStation(station);
+    setShowPopup(true);
+  }
+
+  function closePopup() {
+    setShowPopup(false);
+    setSelectedStation(null);
+  }
+
   return (
-    <div>
-      <h1 className={styles.title}>Stations</h1>
-      <input type="text" value={filter} onChange={handleFilterChange} />
-      {stations.map((station) => (
-        <div key={station.id}>
-          <Link href={`/stations/${station.id}`}>
-            {station.name}: {station.distance}km
-          </Link>
+    <div className={styles.container}>
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.searchContainer}>
+          <div className={styles.searchIcon}>🔍</div>
+          <input 
+            type="text" 
+            placeholder="Search a Velo-station"
+            value={filter} 
+            onChange={handleFilterChange}
+            className={styles.searchInput}
+          />
         </div>
-      ))}
+        <div className={styles.favoriteIcon}>❤️</div>
+      </div>
+
+      {/* Stations Grid */}
+      <div className={styles.stationsGrid}>
+        {stations.slice(0, 50).map((station) => (
+          <StationCard 
+            key={station.id} 
+            station={station}
+            onClick={() => handleStationClick(station)}
+          />
+        ))}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className={styles.bottomNav}>
+        <div className={styles.navItem}>
+          <div className={styles.navIcon}>📍</div>
+          <span>Location</span>
+        </div>
+        <div className={styles.navItem}>
+          <div className={styles.navIcon}>💳</div>
+          <span>Velo card</span>
+        </div>
+        <div className={styles.navItem}>
+          <div className={styles.navIcon}>⚠️</div>
+          <span>Help</span>
+        </div>
+        <div className={styles.navItem}>
+          <div className={styles.navIcon}>👤</div>
+          <span>User zone</span>
+        </div>
+        <div className={styles.navItem}>
+          <div className={styles.navIcon}>☰</div>
+          <span>More</span>
+        </div>
+      </div>
+
+      {/* Station Popup */}
+      {showPopup && selectedStation && (
+        <StationPopup 
+          station={selectedStation} 
+          onClose={closePopup}
+        />
+      )}
     </div>
   );
 }
