@@ -1,5 +1,5 @@
 import useImage from '@/data/image';
-import styles from './StationImage.module.css';
+import styles from './stationimage.module.css';
 
 export default function StationImage(props) {
   const { image, isLoading, isError } = useImage(props.station);

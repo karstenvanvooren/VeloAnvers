@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import useNetwork from '@/data/network';
 import { getDistance } from '@/helpers/get-distance';
 import StationCard from '@/components/stationcard';
-import StationPopup from '@/components/stationPopup';
+
 
 export default function Home() {
   const [filter, setFilter] = useState('');
@@ -44,9 +44,10 @@ export default function Home() {
     </div>
   );
 
-  const stations = network.stations.filter(
-    (station) => station.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0
-  );
+const stations = network.stations
+  .filter((station) => station.name.toLowerCase().includes(filter.toLowerCase()))
+  .slice(0, 3);
+
 
   // Add distance to stations
   stations.map((station) => {
@@ -72,13 +73,9 @@ export default function Home() {
 
   function handleStationClick(station) {
     setSelectedStation(station);
-    setShowPopup(true);
+    
   }
 
-  function closePopup() {
-    setShowPopup(false);
-    setSelectedStation(null);
-  }
 
   return (
     <div className={styles.container}>
