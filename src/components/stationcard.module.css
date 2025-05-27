@@ -1,66 +1,105 @@
 .card {
   position: relative;
-  height: 120px;
-  border-radius: 15px;
+  height: 140px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .card:active {
-  transform: translateY(-2px);
+  transform: translateY(-4px) scale(1.01);
+  transition: all 0.1s ease;
 }
 
 .cardContent {
   position: relative;
   z-index: 2;
-  padding: 12px;
+  padding: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   color: white;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .stationNumber {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 4px 8px;
-  align-self: flex-start;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 6px 12px;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.bikeCount {
+.statusIndicator {
   font-size: 16px;
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.bikeInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin: 8px 0;
+}
+
+.bikeCount, .slotsCount {
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 8px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
 }
 
 .status {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 8px;
+  border-radius: 8px;
+  align-self: flex-start;
+  backdrop-filter: blur(5px);
 }
 
 .distance {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   font-size: 10px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 2px 6px;
-  border-radius: 10px;
-  backdrop-filter: blur(5px);
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cardOverlay {
@@ -68,10 +107,15 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  padding: 20px 12px 8px;
+  background: linear-gradient(
+    180deg, 
+    transparent 0%, 
+    rgba(0, 0, 0, 0.4) 50%, 
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  padding: 30px 16px 12px;
   transform: translateY(100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover .cardOverlay {
@@ -80,43 +124,99 @@
 
 .stationName {
   color: white;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.2;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
+}
+
+.availabilityBar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.availabilityFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .card {
-    height: 100px;
+    height: 120px;
+    border-radius: 16px;
   }
   
   .cardContent {
-    padding: 10px;
+    padding: 12px;
   }
   
   .stationNumber {
     font-size: 16px;
-    padding: 3px 6px;
+    padding: 4px 8px;
   }
   
-  .bikeCount {
+  .statusIndicator {
+    width: 24px;
+    height: 24px;
     font-size: 14px;
-    margin: 5px 0;
+  }
+  
+  .bikeCount, .slotsCount {
+    font-size: 12px;
+    padding: 3px 6px;
   }
   
   .status {
     font-size: 10px;
+    padding: 3px 6px;
   }
   
   .distance {
     font-size: 9px;
-    top: 6px;
-    right: 6px;
+    top: 10px;
+    right: 10px;
+    padding: 3px 6px;
   }
   
   .stationName {
-    font-size: 10px;
+    font-size: 11px;
+  }
+  
+  .cardOverlay {
+    padding: 25px 12px 10px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  
+  .card:hover {
+    transform: none;
+  }
+  
+  .cardOverlay {
+    transition: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border: 3px solid white;
+  }
+  
+  .stationNumber, .statusIndicator, .bikeCount, .slotsCount, .status {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid white;
   }
 }

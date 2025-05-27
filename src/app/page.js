@@ -2,17 +2,16 @@
 
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import useNetwork from '@/data/network';
 import { getDistance } from '@/helpers/get-distance';
 import StationCard from '@/components/stationcard';
 
-
 export default function Home() {
   const [filter, setFilter] = useState('');
   const [location, setLocation] = useState({});
-  const [selectedStation, setSelectedStation] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
   const { network, isLoading, isError } = useNetwork();
+  const router = useRouter();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -44,10 +43,9 @@ export default function Home() {
     </div>
   );
 
-const stations = network.stations
-  .filter((station) => station.name.toLowerCase().includes(filter.toLowerCase()))
-  .slice(0, 3);
-
+  const stations = network.stations
+    .filter((station) => station.name.toLowerCase().includes(filter.toLowerCase()))
+    .slice(0, 50);
 
   // Add distance to stations
   stations.map((station) => {
@@ -72,10 +70,8 @@ const stations = network.stations
   }
 
   function handleStationClick(station) {
-    setSelectedStation(station);
-    
+    router.push(`/stations/${station.id}`);
   }
-
 
   return (
     <div className={styles.container}>
@@ -96,7 +92,7 @@ const stations = network.stations
 
       {/* Stations Grid */}
       <div className={styles.stationsGrid}>
-        {stations.slice(0, 50).map((station) => (
+        {stations.map((station) => (
           <StationCard 
             key={station.id} 
             station={station}
@@ -128,14 +124,6 @@ const stations = network.stations
           <span>More</span>
         </div>
       </div>
-
-      {/* Station Popup */}
-      {showPopup && selectedStation && (
-        <StationPopup 
-          station={selectedStation} 
-          onClose={closePopup}
-        />
-      )}
     </div>
   );
 }
