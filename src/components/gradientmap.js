@@ -8,28 +8,39 @@ export default function GradientMap({ stations }) {
   const router = useRouter();
   const [selectedStations, setSelectedStations] = useState([]);
 
+  const fixedStationNames = [
+    '017- Groenplaats',
+    '002- Centraal Station - Astrid 2',
+    '060- Grote Markt',
+    '005- Centraal Station / Kievit',
+    '081- Justitiepaleis'
+  ];
+
   useEffect(() => {
     if (stations && stations.length > 0) {
-      const shuffled = [...stations].sort(() => 0.5 - Math.random());
-      setSelectedStations(shuffled.slice(0, 5));
+      const fixed = fixedStationNames.map(name =>
+        stations.find(station => station.name === name)
+      ).filter(Boolean);
+
+      setSelectedStations(fixed);
     }
   }, [stations]);
 
   const getStationColor = (station) => {
     const total = station.free_bikes + station.empty_slots;
-    const ratio = station.free_bikes / total;
+    const ratio = total > 0 ? station.free_bikes / total : 0;
 
-    if (ratio >= 0.7) return '#2d5016'; // veel
-    if (ratio >= 0.4) return '#e65100'; // matig
-    if (ratio > 0) return '#b71c1c'; // weinig
-    return '#1a0000'; // geen
+    if (ratio >= 0.7) return '#2d5016';
+    if (ratio >= 0.4) return '#e65100';
+    if (ratio > 0) return '#b71c1c';
+    return '#1a0000';
   };
 
   const handleStationClick = (station) => {
     router.push(`/stations/${station.id}`);
   };
 
-  if (selectedStations.length === 0) {
+  if (!stations || stations.length === 0 || selectedStations.length === 0) {
     return <div className={styles.loading}>Loading stations...</div>;
   }
 
@@ -61,8 +72,10 @@ export default function GradientMap({ stations }) {
             className={styles.stationZone}
             style={{ top, left }}
             onClick={() => handleStationClick(station)}
-            title={station.name} // bij hover naam tonen
-          />
+          >
+            {/* Tooltip voor hover */}
+            <div className={styles.stationTooltip}>{station.name}</div>
+          </div>
         );
       })}
 
@@ -90,11 +103,3 @@ export default function GradientMap({ stations }) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
