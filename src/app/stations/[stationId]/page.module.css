@@ -1,17 +1,19 @@
+/* page.module.css */
 .container {
   min-height: 100vh;
   background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
   padding: 0;
   margin: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  padding-bottom: 1px; /* Voorkomt witte rand onderaan */
 }
 
-.header {
+.headerBlack {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  background: rgb(0, 0, 0);
+  color: white;
 }
 
 .backButton {
@@ -23,6 +25,8 @@
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.2);
   transition: all 0.2s ease;
+  margin-right: 15px;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .backButton:hover {
@@ -35,6 +39,7 @@
   font-size: 20px;
   font-weight: 600;
   margin: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .stationCard {
@@ -43,7 +48,6 @@
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
 }
 
 .stationHeader {
@@ -61,6 +65,7 @@
   margin: 0;
   line-height: 1.3;
   flex: 1;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .statusBadge {
@@ -71,6 +76,7 @@
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .mainStats {
@@ -102,12 +108,14 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 5px;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .statLabel {
   font-size: 14px;
   color: #666;
   font-weight: 500;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .progressSection {
@@ -119,6 +127,7 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .progressBar {
@@ -139,6 +148,7 @@
   font-size: 14px;
   color: #666;
   text-align: right;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .additionalInfo {
@@ -161,11 +171,13 @@
 .infoLabel {
   font-weight: 500;
   color: #666;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .infoValue {
   font-weight: 600;
   color: #333;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .imageSection {
@@ -174,7 +186,6 @@
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
 }
 
 .imageTitle {
@@ -182,6 +193,7 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 15px;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .actions {
@@ -189,7 +201,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 15px;
   padding: 20px;
-  margin-bottom: 20px;
 }
 
 .actionButton {
@@ -203,6 +214,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  text-decoration: none;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .actionButton:hover {
@@ -235,11 +249,12 @@
   text-align: center;
   padding: 20px;
   font-size: 18px;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-  .header {
+  .headerBlack {
     padding: 15px;
   }
   

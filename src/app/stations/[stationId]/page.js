@@ -5,17 +5,46 @@ import useNetwork from '@/data/network';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import StationImage from '@/components/StationImage';
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
 
 export default function Station() {
   const { network, isLoading, isError } = useNetwork();
   const params = useParams();
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(stored);
+    
+    // Load IBM Plex Sans font
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
+  const toggleFavorite = (id) => {
+    let updated;
+    if (favorites.includes(id)) {
+      updated = favorites.filter((fav) => fav !== id);
+    } else {
+      updated = [...favorites, id];
+    }
+    setFavorites(updated);
+    localStorage.setItem('favorites', JSON.stringify(updated));
+  };
 
   if (isLoading) return (
     <div className={styles.container}>
       <div className={styles.loadingSpinner}></div>
     </div>
   );
-  
+
   if (isError) return (
     <div className={styles.container}>
       <div className={styles.error}>Unable to load station details</div>
@@ -36,7 +65,7 @@ export default function Station() {
 
   const totalSlots = station.free_bikes + station.empty_slots;
   const availabilityRatio = station.free_bikes / totalSlots;
-  
+
   const getStatusColor = () => {
     if (availabilityRatio > 0.7) return '#00ff88';
     if (availabilityRatio > 0.3) return '#ffd700';
@@ -49,23 +78,27 @@ export default function Station() {
     return 'Limited';
   };
 
+  const isFavorited = favorites.includes(station.id);
+
   return (
     <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
+      <Head>
+        <title>Station Details | Velo Antwerpen</title>
+      </Head>
+
+      <div className={styles.headerBlack}>
         <Link href="/" className={styles.backButton}>
           ← Back
         </Link>
         <h1 className={styles.title}>Station Details</h1>
       </div>
 
-      {/* Station Info Card */}
       <div className={styles.stationCard}>
         <div className={styles.stationHeader}>
           <h2 className={styles.stationName}>
             {station.name.replace('velo-antwerpen - ', '')}
           </h2>
-          <div 
+          <div
             className={styles.statusBadge}
             style={{ backgroundColor: getStatusColor() }}
           >
@@ -73,14 +106,13 @@ export default function Station() {
           </div>
         </div>
 
-        {/* Main Stats */}
         <div className={styles.mainStats}>
           <div className={styles.statCard}>
             <div className={styles.statIcon}>🚲</div>
             <div className={styles.statNumber}>{station.free_bikes}</div>
             <div className={styles.statLabel}>Available Bikes</div>
           </div>
-          
+
           <div className={styles.statCard}>
             <div className={styles.statIcon}>🅿️</div>
             <div className={styles.statNumber}>{station.empty_slots}</div>
@@ -88,17 +120,16 @@ export default function Station() {
           </div>
         </div>
 
-        {/* Progress Bar */}
         <div className={styles.progressSection}>
           <div className={styles.progressLabel}>
             Station Capacity: {station.free_bikes}/{totalSlots}
           </div>
           <div className={styles.progressBar}>
-            <div 
+            <div
               className={styles.progressFill}
-              style={{ 
+              style={{
                 width: `${(station.free_bikes / totalSlots) * 100}%`,
-                backgroundColor: getStatusColor()
+                backgroundColor: getStatusColor(),
               }}
             ></div>
           </div>
@@ -107,7 +138,6 @@ export default function Station() {
           </div>
         </div>
 
-        {/* Additional Info */}
         <div className={styles.additionalInfo}>
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>Station ID:</span>
@@ -126,21 +156,28 @@ export default function Station() {
         </div>
       </div>
 
-      {/* Station Image */}
       <div className={styles.imageSection}>
         <h3 className={styles.imageTitle}>Station View</h3>
         <StationImage station={station} />
       </div>
 
-      {/* Action Buttons */}
       <div className={styles.actions}>
-        <button className={styles.actionButton}>
-          📍 Get Directions
-        </button>
-        <button className={styles.actionButton}>
-          ⭐ Add to Favorites
+        <a
+          className={styles.actionButton}
+          href={`https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🧭 Navigate with Google Maps
+        </a>
+        <button
+          className={styles.actionButton}
+          onClick={() => toggleFavorite(station.id)}
+        >
+          {isFavorited ? '❤️ Favorited' : '🤍 Add to Favorites'}
         </button>
       </div>
     </div>
   );
 }
+
