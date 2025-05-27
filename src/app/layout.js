@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Velo Antwerpen - Bike Sharing',
+  title: 'VeloAnvers',
   description: 'Find and rent bikes in Antwerpen with our modern bike sharing app',
 };
 
