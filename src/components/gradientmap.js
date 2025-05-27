@@ -1,3 +1,4 @@
+// gradientmap.js
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './gradientmap.module.css';
@@ -7,25 +8,19 @@ export default function GradientMap({ stations }) {
   const [selectedStations, setSelectedStations] = useState([]);
 
   useEffect(() => {
-    // Selecteer de eerste 3 stations voor de demo
     if (stations && stations.length > 0) {
-      setSelectedStations(stations.slice(0, 3));
+      setSelectedStations(stations.slice(0, 5));
     }
   }, [stations]);
 
   const getStationColor = (station) => {
     const totalSlots = station.free_bikes + station.empty_slots;
     const availabilityRatio = station.free_bikes / totalSlots;
-    
-    if (availabilityRatio >= 0.7) {
-      return '#2d5016'; // Donker groen - veel fietsen
-    } else if (availabilityRatio >= 0.4) {
-      return '#e65100'; // Oranje - matige beschikbaarheid
-    } else if (availabilityRatio > 0) {
-      return '#b71c1c'; // Rood - weinig fietsen
-    } else {
-      return '#1a0000'; // Donkerrood - geen fietsen
-    }
+
+    if (availabilityRatio >= 0.7) return '#2d5016';
+    if (availabilityRatio >= 0.4) return '#e65100';
+    if (availabilityRatio > 0) return '#b71c1c';
+    return '#1a0000';
   };
 
   const handleStationClick = (station) => {
@@ -36,30 +31,36 @@ export default function GradientMap({ stations }) {
     return <div className={styles.loading}>Loading stations...</div>;
   }
 
-  // Genereer gradient stops gebaseerd op de 3 stations
-  const gradientStops = selectedStations.map((station, index) => {
+  // Genereer radiale gradientlagen per station
+  const radialGradients = selectedStations.map((station, index) => {
     const color = getStationColor(station);
-    const position = (index / (selectedStations.length - 1)) * 100;
-    return `${color} ${position}%`;
-  }).join(', ');
+    const positions = [
+      { x: '25%', y: '20%' },
+      { x: '75%', y: '20%' },
+      { x: '50%', y: '50%' },
+      { x: '25%', y: '75%' },
+      { x: '75%', y: '75%' },
+    ];
+    const pos = positions[index];
+    return `radial-gradient(circle at ${pos.x} ${pos.y}, ${color} 0%, transparent 40%)`;
+  });
 
-  const gradientStyle = {
-    background: `linear-gradient(135deg, ${gradientStops})`
+  const backgroundStyle = {
+    backgroundImage: radialGradients.join(', ')
   };
 
   return (
-    <div className={styles.container} style={gradientStyle}>
+    <div className={styles.container} style={backgroundStyle}>
       {selectedStations.map((station, index) => {
-        // Positioneer de klikbare gebieden op verschillende plekken
         const positions = [
-          { top: '20%', left: '25%' }, // Station 1 - linksboven
-          { top: '50%', left: '50%' }, // Station 2 - midden
-          { top: '75%', left: '75%' }  // Station 3 - rechtsonder
+          { top: '20%', left: '25%' },
+          { top: '20%', left: '75%' },
+          { top: '50%', left: '50%' },
+          { top: '75%', left: '25%' },
+          { top: '75%', left: '75%' }
         ];
 
         const position = positions[index];
-        const totalSlots = station.free_bikes + station.empty_slots;
-        const availabilityRatio = station.free_bikes / totalSlots;
 
         return (
           <div
@@ -73,43 +74,12 @@ export default function GradientMap({ stations }) {
           >
             <div className={styles.stationInfo}>
               <div className={styles.stationName}>
-                {station.name.replace('velo-antwerpen - ', '').substring(0, 20)}...
-              </div>
-              <div className={styles.bikeCount}>
-                🚲 {station.free_bikes}
-              </div>
-              <div className={styles.statusText}>
-                {availabilityRatio >= 0.7 ? 'Veel beschikbaar' :
-                 availabilityRatio >= 0.4 ? 'Matig beschikbaar' :
-                 availabilityRatio > 0 ? 'Weinig beschikbaar' : 'Geen beschikbaar'}
+                {station.name.replace('velo-antwerpen - ', '').substring(0, 20)}
               </div>
             </div>
-            <div className={styles.ripple}></div>
           </div>
         );
       })}
-      
-      <div className={styles.legend}>
-        <div className={styles.legendTitle}>Beschikbaarheid</div>
-        <div className={styles.legendItems}>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{backgroundColor: '#2d5016'}}></div>
-            <span>Veel (70%+)</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{backgroundColor: '#e65100'}}></div>
-            <span>Matig (40-70%)</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{backgroundColor: '#b71c1c'}}></div>
-            <span>Weinig (1-40%)</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{backgroundColor: '#1a0000'}}></div>
-            <span>Geen (0%)</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
