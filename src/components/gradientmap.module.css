@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
 
-:global(html),
+
 :global(body) {
   font-family: 'IBM Plex Sans', sans-serif;
   margin: 0;
