@@ -9,6 +9,10 @@ import GradientMap from '@/components/gradientmap';
 export default function Home() {
   const [filter, setFilter] = useState('');
   const [location, setLocation] = useState({});
+  const [favorites, setFavorites] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedStationId, setSelectedStationId] = useState(null);
+
   const { network, isLoading, isError } = useNetwork();
   const router = useRouter();
 
@@ -28,23 +32,40 @@ export default function Home() {
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
+
+    // Load favorites from localStorage
+    const stored = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(stored);
   }, []);
+
+  function handleFilterChange(e) {
+    setFilter(e.target.value);
+  }
+
+  function toggleDropdown() {
+    setDropdownOpen((prev) => !prev);
+  }
+
+  function handleStationClick(id) {
+    setSelectedStationId(id);
+    setDropdownOpen(false);
+  }
+
+  const favoriteStations = network?.stations?.filter((station) =>
+    favorites.includes(station.id)
+  ) || [];
 
   if (isLoading) return (
     <div className={styles.container}>
       <div className={styles.loadingSpinner}></div>
     </div>
   );
-  
+
   if (isError) return (
     <div className={styles.container}>
       <div className={styles.error}>Unable to load stations</div>
     </div>
   );
-
-  function handleFilterChange(e) {
-    setFilter(e.target.value);
-  }
 
   return (
     <div className={styles.container}>
@@ -60,11 +81,36 @@ export default function Home() {
             className={styles.searchInput}
           />
         </div>
-        <div className={styles.favoriteIcon}>❤️</div>
+
+        <div className={styles.favoriteWrapper}>
+          <div className={styles.favoriteIcon} onClick={toggleDropdown}>
+            ❤️
+          </div>
+          {dropdownOpen && (
+            <ul className={styles.dropdownMenu}>
+              {favoriteStations.length === 0 ? (
+                <li className={styles.dropdownItem}>No favorites</li>
+              ) : (
+                favoriteStations.map((station) => (
+                  <li
+                    key={station.id}
+                    className={styles.dropdownItem}
+                    onClick={() => handleStationClick(station.id)}
+                  >
+                    {station.name.replace('velo-antwerpen - ', '')}
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+        </div>
       </div>
 
       {/* Gradient Map */}
-      <GradientMap stations={network.stations} />
+      <GradientMap 
+        stations={network.stations} 
+        selectedStationId={selectedStationId}
+      />
 
       {/* Bottom Navigation */}
       <div className={styles.bottomNav}>
