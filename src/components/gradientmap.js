@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './gradientmap.module.css';
@@ -17,10 +19,10 @@ export default function GradientMap({ stations }) {
     const total = station.free_bikes + station.empty_slots;
     const ratio = station.free_bikes / total;
 
-    if (ratio >= 0.7) return '#2d5016';     // veel
-    if (ratio >= 0.4) return '#e65100';     // matig
-    if (ratio > 0) return '#b71c1c';        // weinig
-    return '#1a0000';                       // geen
+    if (ratio >= 0.7) return '#2d5016'; // veel
+    if (ratio >= 0.4) return '#e65100'; // matig
+    if (ratio > 0) return '#b71c1c'; // weinig
+    return '#1a0000'; // geen
   };
 
   const handleStationClick = (station) => {
@@ -59,11 +61,8 @@ export default function GradientMap({ stations }) {
             className={styles.stationZone}
             style={{ top, left }}
             onClick={() => handleStationClick(station)}
-          >
-            <div className={styles.stationTooltip}>
-              {station.name.replace('velo-antwerpen - ', '')}
-            </div>
-          </div>
+            title={station.name} // bij hover naam tonen
+          />
         );
       })}
 
@@ -91,6 +90,7 @@ export default function GradientMap({ stations }) {
     </div>
   );
 }
+
 
 
 
