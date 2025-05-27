@@ -1,8 +1,12 @@
 import useImage from '@/data/image';
 import styles from './stationimage.module.css';
+import Image from 'next/image';
 
 export default function StationImage(props) {
   const station = props.station;
+  
+  // Hook ALTIJD aanroepen, ook als station null is
+  const { image, isLoading, isError } = useImage(station);
 
   if (!station) {
     return (
@@ -11,8 +15,6 @@ export default function StationImage(props) {
       </div>
     );
   }
-
-  const { image, isLoading, isError } = useImage(station);
 
   if (isLoading) {
     return (
@@ -40,7 +42,7 @@ export default function StationImage(props) {
         <div className={styles.noImageState}>
           <div className={styles.noImageIcon}>🏢</div>
           <p className={styles.noImageText}>No street view available</p>
-          <p className={styles.noImageSubtext}>This station doesn't have street imagery</p>
+          <p className={styles.noImageSubtext}>This station doesn&apos;t have street imagery</p>
         </div>
       </div>
     );
@@ -48,10 +50,12 @@ export default function StationImage(props) {
 
   return (
     <div className={styles.container}>
-      <img 
-        src={image} 
+      <Image
+        src={image}
         alt={`Street view of ${station.name || 'station'}`}
         className={styles.stationImage}
+        width={400}
+        height={300}
         loading="lazy"
       />
       <div className={styles.imageOverlay}>
