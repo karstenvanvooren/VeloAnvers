@@ -13,8 +13,16 @@ export default function Home() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedStationId, setSelectedStationId] = useState(null);
 
-  const { network, isLoading, isError } = useNetwork();
   const router = useRouter();
+  const { network, isLoading, isError } = useNetwork();
+
+  const fixedFavoriteIds = [
+    '017', // Groenplaats
+    '002', // Centraal Station - Astrid 2
+    '060', // Grote Markt
+    '005', // Centraal Station / Kievit
+    '081'  // Justitiepaleis
+  ];
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -33,9 +41,18 @@ export default function Home() {
       console.error('Geolocation is not supported by this browser.');
     }
 
-    // Load favorites from localStorage
-    const stored = JSON.parse(localStorage.getItem('favorites')) || [];
-    setFavorites(stored);
+    // Favorieten laden en updaten bij terugkeer
+    function loadFavorites() {
+      const stored = JSON.parse(localStorage.getItem('favorites')) || [];
+      const filteredFavorites = stored.filter((id) => fixedFavoriteIds.includes(id));
+      setFavorites(filteredFavorites);
+    }
+
+    loadFavorites();
+    window.addEventListener('focus', loadFavorites);
+    return () => {
+      window.removeEventListener('focus', loadFavorites);
+    };
   }, []);
 
   function handleFilterChange(e) {

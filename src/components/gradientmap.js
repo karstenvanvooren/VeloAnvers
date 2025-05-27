@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './gradientmap.module.css';
 
-export default function GradientMap({ stations }) {
+export default function GradientMap({ stations, selectedStationId }) {
   const router = useRouter();
   const [selectedStations, setSelectedStations] = useState([]);
 
+  // Alleen favorieten tonen
   const fixedStationNames = [
     '017- Groenplaats',
     '002- Centraal Station - Astrid 2',
@@ -18,10 +19,9 @@ export default function GradientMap({ stations }) {
 
   useEffect(() => {
     if (stations && stations.length > 0) {
-      const fixed = fixedStationNames.map(name =>
-        stations.find(station => station.name === name)
-      ).filter(Boolean);
-
+      const fixed = fixedStationNames
+        .map(name => stations.find(station => station.name === name))
+        .filter(Boolean);
       setSelectedStations(fixed);
     }
   }, [stations]);
@@ -66,14 +66,15 @@ export default function GradientMap({ stations }) {
     <div className={styles.container} style={gradientStyle}>
       {selectedStations.map((station, index) => {
         const { top, left } = positions[index];
+        const isSelected = selectedStationId === station.id;
+
         return (
           <div
             key={station.id}
-            className={styles.stationZone}
+            className={`${styles.stationZone} ${isSelected ? styles.selected : ''}`}
             style={{ top, left }}
             onClick={() => handleStationClick(station)}
           >
-            {/* Tooltip voor hover */}
             <div className={styles.stationTooltip}>{station.name}</div>
           </div>
         );
@@ -103,3 +104,4 @@ export default function GradientMap({ stations }) {
     </div>
   );
 }
+
