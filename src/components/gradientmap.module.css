@@ -1,0 +1,228 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 160px); /* Ruimte voor header en footer */
+  overflow: hidden;
+  cursor: pointer;
+  animation: gradientShift 10s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { 
+    filter: brightness(1) saturate(1); 
+  }
+  50% { 
+    filter: brightness(1.1) saturate(1.2); 
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 160px);
+  color: white;
+  font-size: 18px;
+}
+
+.stationZone {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: pulse 3s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+  }
+}
+
+.stationZone:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.8);
+}
+
+.stationZone:active {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.stationInfo {
+  text-align: center;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+  position: relative;
+}
+
+.stationName {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  line-height: 1.2;
+}
+
+.bikeCount {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.statusText {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  animation: rippleEffect 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+.legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 15px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legendTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.legendItems {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .container {
+    height: calc(100vh - 140px);
+  }
+  
+  .stationZone {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .stationName {
+    font-size: 10px;
+  }
+  
+  .bikeCount {
+    font-size: 14px;
+  }
+  
+  .statusText {
+    font-size: 9px;
+  }
+  
+  .legend {
+    bottom: 15px;
+    left: 15px;
+    padding: 12px;
+  }
+  
+  .legendTitle {
+    font-size: 12px;
+  }
+  
+  .legendItem {
+    font-size: 11px;
+  }
+  
+  .legendColor {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none;
+  }
+  
+  .stationZone {
+    animation: none;
+  }
+  
+  .ripple {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .stationZone {
+    border: 3px solid white;
+    background: rgba(0, 0, 0, 0.8);
+  }
+  
+  .legend {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid white;
+  }
+}

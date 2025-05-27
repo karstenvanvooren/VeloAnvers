@@ -4,8 +4,7 @@ import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useNetwork from '@/data/network';
-import { getDistance } from '@/helpers/get-distance';
-import StationCard from '@/components/stationcard';
+import GradientMap from '@/components/gradientmap';
 
 export default function Home() {
   const [filter, setFilter] = useState('');
@@ -43,34 +42,8 @@ export default function Home() {
     </div>
   );
 
-  const stations = network.stations
-    .filter((station) => station.name.toLowerCase().includes(filter.toLowerCase()))
-    .slice(0, 50);
-
-  // Add distance to stations
-  stations.map((station) => {
-    if (location.latitude && location.longitude) {
-      station.distance =
-        getDistance(
-          location.latitude,
-          location.longitude,
-          station.latitude,
-          station.longitude
-        ).distance / 1000;
-    } else {
-      station.distance = 0;
-    }
-  });
-
-  // Sort stations by distance
-  stations.sort((a, b) => a.distance - b.distance);
-
   function handleFilterChange(e) {
     setFilter(e.target.value);
-  }
-
-  function handleStationClick(station) {
-    router.push(`/stations/${station.id}`);
   }
 
   return (
@@ -90,16 +63,8 @@ export default function Home() {
         <div className={styles.favoriteIcon}>❤️</div>
       </div>
 
-      {/* Stations Grid */}
-      <div className={styles.stationsGrid}>
-        {stations.map((station) => (
-          <StationCard 
-            key={station.id} 
-            station={station}
-            onClick={() => handleStationClick(station)}
-          />
-        ))}
-      </div>
+      {/* Gradient Map */}
+      <GradientMap stations={network.stations} />
 
       {/* Bottom Navigation */}
       <div className={styles.bottomNav}>
