@@ -5,7 +5,6 @@ import Image from 'next/image';
 export default function StationImage(props) {
   const station = props.station;
   
-  // Hook ALTIJD aanroepen, ook als station null is
   const { image, isLoading, isError } = useImage(station);
 
   if (!station) {
@@ -57,6 +56,8 @@ export default function StationImage(props) {
         width={400}
         height={300}
         loading="lazy"
+        unoptimized={true}
+        priority={false}
       />
       <div className={styles.imageOverlay}>
         <div className={styles.imageLabel}>

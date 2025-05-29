@@ -1,4 +1,8 @@
+// next.config.mjs (update je bestaande bestand)
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+  images: {
+    domains: ['maps.googleapis.com'],
+    unoptimized: true
+  }
+};
