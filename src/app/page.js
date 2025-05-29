@@ -13,17 +13,10 @@ export default function Home() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedStationId, setSelectedStationId] = useState(null);
 
-  const router = useRouter();
   const { network, isLoading, isError } = useNetwork();
+  const router = useRouter();
 
-  const fixedFavoriteIds = [
-    '017', // Groenplaats
-    '002', // Centraal Station - Astrid 2
-    '060', // Grote Markt
-    '005', // Centraal Station / Kievit
-    '081'  // Justitiepaleis
-  ];
-
+  // Geolocatie en favorieten laden
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -37,19 +30,17 @@ export default function Home() {
           console.error(error);
         }
       );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
     }
 
-    // Favorieten laden en updaten bij terugkeer
+    // Favorieten laden bij opstart en bij focus
     function loadFavorites() {
       const stored = JSON.parse(localStorage.getItem('favorites')) || [];
-      const filteredFavorites = stored.filter((id) => fixedFavoriteIds.includes(id));
-      setFavorites(filteredFavorites);
+      setFavorites(stored);
     }
 
     loadFavorites();
     window.addEventListener('focus', loadFavorites);
+
     return () => {
       window.removeEventListener('focus', loadFavorites);
     };
@@ -72,17 +63,21 @@ export default function Home() {
     favorites.includes(station.id)
   ) || [];
 
-  if (isLoading) return (
-    <div className={styles.container}>
-      <div className={styles.loadingSpinner}></div>
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingSpinner}></div>
+      </div>
+    );
+  }
 
-  if (isError) return (
-    <div className={styles.container}>
-      <div className={styles.error}>Unable to load stations</div>
-    </div>
-  );
+  if (isError) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>Unable to load stations</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -123,13 +118,13 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Gradient Map */}
+      {/* Map */}
       <GradientMap 
         stations={network.stations} 
         selectedStationId={selectedStationId}
       />
 
-      {/* Bottom Navigation */}
+      {/* Bottom Nav */}
       <div className={styles.bottomNav}>
         <div className={styles.navItem}>
           <div className={styles.navIcon}>📍</div>
@@ -155,3 +150,4 @@ export default function Home() {
     </div>
   );
 }
+

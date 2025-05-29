@@ -16,24 +16,24 @@ export default function Station() {
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('favorites')) || [];
     setFavorites(stored);
-    
-    // Load IBM Plex Sans font
+
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
-    
+
     return () => {
       document.head.removeChild(link);
     };
   }, []);
 
   const toggleFavorite = (id) => {
+    const stored = JSON.parse(localStorage.getItem('favorites')) || [];
     let updated;
-    if (favorites.includes(id)) {
-      updated = favorites.filter((fav) => fav !== id);
+    if (stored.includes(id)) {
+      updated = stored.filter((fav) => fav !== id);
     } else {
-      updated = [...favorites, id];
+      updated = [...stored, id];
     }
     setFavorites(updated);
     localStorage.setItem('favorites', JSON.stringify(updated));
@@ -180,4 +180,5 @@ export default function Station() {
     </div>
   );
 }
+
 
