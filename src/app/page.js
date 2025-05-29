@@ -31,20 +31,54 @@ export default function Home() {
         }
       );
     }
+  }, []);
 
-    // Favorieten laden bij opstart en bij focus
-    function loadFavorites() {
+  // Favorieten laden en cleanen wanneer network data beschikbaar is
+  useEffect(() => {
+    if (!network?.stations) return;
+
+    // Alleen deze 5 stations zijn toegestaan
+    const allowedStationNames = [
+      '017- Groenplaats',
+      '002- Centraal Station - Astrid 2',
+      '060- Grote Markt',
+      '005- Centraal Station / Kievit',
+      '081- Justitiepaleis'
+    ];
+
+    function loadAndCleanFavorites() {
       const stored = JSON.parse(localStorage.getItem('favorites')) || [];
-      setFavorites(stored);
+      
+      // Filter alleen stations die in de toegestane lijst staan
+      const allowedStations = network.stations.filter(station => 
+        allowedStationNames.some(allowedName => 
+          station.name.includes(allowedName)
+        )
+      );
+      
+      const allowedStationIds = allowedStations.map(station => station.id);
+      const cleanedFavorites = stored.filter(favoriteId => 
+        allowedStationIds.includes(favoriteId)
+      );
+      
+      // Update localStorage als er invalid favorites waren
+      if (cleanedFavorites.length !== stored.length) {
+        localStorage.setItem('favorites', JSON.stringify(cleanedFavorites));
+        console.log(`Cleaned ${stored.length - cleanedFavorites.length} invalid favorites from non-allowed stations`);
+      }
+      
+      setFavorites(cleanedFavorites);
     }
 
-    loadFavorites();
-    window.addEventListener('focus', loadFavorites);
+    loadAndCleanFavorites();
+    
+    // Event listener voor wanneer window focus krijgt
+    window.addEventListener('focus', loadAndCleanFavorites);
 
     return () => {
-      window.removeEventListener('focus', loadFavorites);
+      window.removeEventListener('focus', loadAndCleanFavorites);
     };
-  }, []);
+  }, [network?.stations]); // Dependency op network.stations
 
   function handleFilterChange(e) {
     setFilter(e.target.value);
@@ -59,8 +93,20 @@ export default function Home() {
     setDropdownOpen(false);
   }
 
+  // Alleen toegestane stations als favorieten
+  const allowedStationNames = [
+    '017- Groenplaats',
+    '002- Centraal Station - Astrid 2',
+    '060- Grote Markt',
+    '005- Centraal Station / Kievit',
+    '081- Justitiepaleis'
+  ];
+
   const favoriteStations = network?.stations?.filter((station) =>
-    favorites.includes(station.id)
+    favorites.includes(station.id) && 
+    allowedStationNames.some(allowedName => 
+      station.name.includes(allowedName)
+    )
   ) || [];
 
   if (isLoading) {
@@ -150,4 +196,3 @@ export default function Home() {
     </div>
   );
 }
-
